@@ -1,0 +1,1 @@
+export { PowerBIReport } from './PowerBIReport'

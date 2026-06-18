@@ -1,0 +1,28 @@
+{
+    "name": "yourname/report-viewer-for-pbi",
+    "description": "Embed Power BI reports and dashboards in WordPress via shortcode with server-side Azure AD authentication.",
+    "type": "wordpress-plugin",
+    "require": {
+        "php": ">=8.0",
+        "composer/installers": "^2.0",
+        "cmb2/cmb2": "^2.10"
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/cmb2/": ["cmb2/cmb2"]
+        }
+    },
+    "scripts": {
+        "build": [
+            "@build:react",
+            "@build:zip"
+        ],
+        "build:react": "cd react-app && npm ci && npm run build",
+        "build:zip": "php scripts/export.php"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
