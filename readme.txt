@@ -1,5 +1,5 @@
 === Report Viewer for Power BI ===
-Contributors: yourname
+Contributors: atlaspolicy
 Tags: power bi, reports, embed, business intelligence
 Requires at least: 6.0
 Tested up to: 6.9

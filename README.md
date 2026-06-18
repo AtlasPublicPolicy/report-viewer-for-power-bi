@@ -1,6 +1,6 @@
-# My Plugin — WordPress Plugin Scaffold
+# Report Viewer for Power BI
 
-A WordPress plugin scaffold that mounts a React + Vite application via shortcode. Demonstrates REST API endpoints, TanStack Query data fetching, styled-components theming, and class-based PHP architecture intended as a starting point for building real plugin features.
+A WordPress plugin that embeds Microsoft Power BI reports and dashboards into any page or post via the `[powerbi_report]` shortcode.
 
 ---
 
@@ -60,6 +60,7 @@ composer run build
 ```
 
 This will:
+
 1. `npm ci && npm run build` inside `react-app/` → outputs to `react-app/dist/`
 2. Run `scripts/export.php` → creates `report-viewer-pbi.zip`
 
@@ -85,7 +86,7 @@ Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if n
 
 1. Install and activate the **Plugin Check** plugin from **Plugins → Add New**.
 2. Go to **Tools → Plugin Check**.
-3. Select **Atlas Scaffold** from the dropdown and click **Check it!**.
+3. Select **Report Viewer for Power BI** from the dropdown and click **Check it!**.
 
 ### Saving results
 
@@ -101,52 +102,68 @@ Or use the `--format=json` flag if you prefer structured output.
 
 ## Usage
 
-1. Go to **Settings → My Plugin** and set your **Display Title**.
-2. Add `[my_plugin]` to any page or post.
-3. The React app mounts and renders the title, a paginated table of post names (from the custom REST endpoint), and a table of registered post types (from the WP native API).
+1. Go to **Power BI Reports → Settings** and enter your Azure AD credentials (Client ID, Client Secret, Master User UPN, and Master User Password).
+2. Go to **Power BI Reports → Add New** and create a report post. Enter the **Report ID** and **Group/Workspace ID** from the Power BI service. Set the embed type (report or dashboard), optional page name, display dimensions, and content restriction level.
+3. Copy the **Shortcode** value shown in the report list (`[powerbi_report id="{post_id}"]`) and paste it into any page or post.
+4. The React app mounts at the shortcode location and renders the embedded report or dashboard.
 
-> **Note:** The posts table requires the user to be logged in as an Administrator (or any role granted the `my_plugin_read_posts` capability). Deactivate and reactivate the plugin after first install to ensure the capability is applied.
+> **Note:** Content restriction is configured per report via the **Restriction** meta field. Options are `public` (anyone), `logged_in` (must be authenticated), or `administrator` (must have `manage_options`). The `powerbi_view` capability is added to the Administrator role on activation; deactivate and reactivate if it is missing.
+
+**Shortcode attributes:**
+
+| Attribute | Default             | Description                                 |
+| --------- | ------------------- | ------------------------------------------- |
+| `id`      | (required)          | WP post ID of the `powerbi_report` post.    |
+| `width`   | post meta / `100%`  | Overrides the report post's width setting.  |
+| `height`  | post meta / `600px` | Overrides the report post's height setting. |
 
 ---
 
 ## REST API
 
-The plugin registers a custom REST namespace at `my-plugin/v1`.
+The plugin registers a custom REST namespace at `report-viewer-for-pbi/v1`.
 
-### `GET /wp-json/my-plugin/v1/posts`
+### `GET /wp-json/report-viewer-for-pbi/v1/powerbi/embed`
 
-Returns a paginated list of published post IDs and titles.
-
-**Requires:** the `my_plugin_read_posts` capability (see [Capabilities](#capabilities) below).
+Returns the embed configuration needed by the `powerbi-client-react` component. Token generation is performed server-side so credentials never reach the browser.
 
 **Query parameters:**
 
-| Parameter  | Type    | Default | Description                          |
-|------------|---------|---------|--------------------------------------|
-| `page`     | integer | `1`     | Page number to retrieve.             |
-| `per_page` | integer | `10`    | Items per page. Min `1`, max `100`.  |
+| Parameter | Type    | Required | Description                              |
+| --------- | ------- | -------- | ---------------------------------------- |
+| `post_id` | integer | Yes      | WP post ID of the `powerbi_report` post. |
 
 **Example request:**
 
 ```
-GET /wp-json/my-plugin/v1/posts?page=1&per_page=5
+GET /wp-json/report-viewer-for-pbi/v1/powerbi/embed?post_id=42
 ```
 
 **Example response:**
 
 ```json
-[
-  { "id": 42, "title": "Hello World" },
-  { "id": 43, "title": "My Second Post" }
-]
+{
+  "embedUrl": "https://app.powerbi.com/reportEmbed?...",
+  "accessToken": "<azure-ad-bearer-token>",
+  "reportId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "embedType": "report",
+  "pageName": "ReportSection1"
+}
 ```
 
-**Response headers** (mirrors WP core conventions):
+`pageName` is omitted when not configured on the report post.
 
-| Header            | Description                              |
-|-------------------|------------------------------------------|
-| `X-WP-Total`      | Total number of published posts.         |
-| `X-WP-TotalPages` | Total pages at the current `per_page`.   |
+**Response status codes:**
+
+| Status | Meaning                                                                                         |
+| ------ | ----------------------------------------------------------------------------------------------- |
+| `200`  | Success — embed config returned.                                                                |
+| `400`  | `post_id` does not refer to a valid `powerbi_report` post.                                      |
+| `401`  | Report is restricted to logged-in users and the request is anonymous.                           |
+| `403`  | Report is restricted to administrators and the current user lacks `manage_options`.             |
+| `500`  | Report post is missing `pbi_report_id` or `pbi_group_id`, or Azure AD token acquisition failed. |
+
+Responses include `Cache-Control: no-store` to prevent caching plugins from serving stale embed tokens.
 
 ---
 
@@ -154,9 +171,9 @@ GET /wp-json/my-plugin/v1/posts?page=1&per_page=5
 
 The plugin registers one custom capability:
 
-| Capability              | Description                                      |
-|-------------------------|--------------------------------------------------|
-| `my_plugin_read_posts`  | Grants access to the `/posts` REST endpoint.     |
+| Capability     | Description                                                 |
+| -------------- | ----------------------------------------------------------- |
+| `powerbi_view` | Grants access to Power BI report content within the plugin. |
 
 This capability is automatically added to the **Administrator** role on plugin activation and removed from all roles on deactivation.
 
@@ -166,10 +183,12 @@ To grant access to an additional role (e.g. Editor), add this to your theme's `f
 add_action( 'init', function () {
     $role = get_role( 'editor' );
     if ( $role ) {
-        $role->add_cap( 'my_plugin_read_posts' );
+        $role->add_cap( 'powerbi_view' );
     }
 } );
 ```
+
+> **Note:** Per-report content restriction (`public` / `logged_in` / `administrator`) is enforced independently of this capability, directly in the REST permission callback using the `pbi_restriction` post meta value.
 
 ---
 
@@ -177,13 +196,13 @@ add_action( 'init', function () {
 
 PHP passes data to the React app via `wp_localize_script`. The shape is defined in `src/wp-globals.d.ts`:
 
-| Key                    | Type    | Source (PHP)                         | Description                              |
-|------------------------|---------|--------------------------------------|------------------------------------------|
-| `restUrl`              | string  | `rest_url()`                         | WP REST API base URL                     |
-| `nonce`                | string  | `wp_create_nonce('wp_rest')`         | Nonce for authenticated REST requests    |
-| `powerbiDisplayStatus` | boolean | CMB2 settings                        | Show loading/error states to end users   |
-| `spinnerType`          | string  | CMB2 settings                        | react-spinners component key             |
-| `spinnerColor`         | string  | CMB2 settings                        | CSS color for the spinner                |
+| Key                    | Type    | Source (PHP)                 | Description                            |
+| ---------------------- | ------- | ---------------------------- | -------------------------------------- |
+| `restUrl`              | string  | `rest_url()`                 | WP REST API base URL                   |
+| `nonce`                | string  | `wp_create_nonce('wp_rest')` | Nonce for authenticated REST requests  |
+| `powerbiDisplayStatus` | boolean | CMB2 settings                | Show loading/error states to end users |
+| `spinnerType`          | string  | CMB2 settings                | react-spinners component key           |
+| `spinnerColor`         | string  | CMB2 settings                | CSS color for the spinner              |
 
 To add more data, extend `RVPBI_Assets::js_data()` in `includes/assets.php` and update the `Window` interface in `src/wp-globals.d.ts`.
 
@@ -194,13 +213,14 @@ To add more data, extend `RVPBI_Assets::js_data()` in `includes/assets.php` and 
 The React app follows a three-layer pattern:
 
 **1. API layer — `src/api/api.ts`**
-A single shared axios client (base URL + `X-WP-Nonce` header from `window.ReportViewerPBI`). Each endpoint gets one typed async function. Add new endpoints here.
+A single shared axios client (base URL + `X-WP-Nonce` header from `window.ReportViewerPBI`). Exports `fetchEmbedConfig()` for the embed endpoint. Add new endpoints here.
 
 **2. Hooks — `src/hooks/`**
 TanStack Query wrappers around API functions. Hooks own pagination state (`useState` for page) and expose `{ data, page, setPage, totalPages, isLoading, isError }`. Add a new hook for each new data resource.
 
 **3. Components — `src/components/`**
 Presentational components that consume hooks. Each component lives in its own folder:
+
 ```
 ComponentName/
 ├── ComponentName.tsx        # component logic and JSX
@@ -221,11 +241,12 @@ Exports a `theme` object with `color`, `font`, and `space` keys. Edit this file 
 `DefaultTheme` is derived directly from `typeof theme`, so adding a new token to `theme.ts` makes it immediately available and typed in all styled components — no separate interface to maintain.
 
 **Usage in styled components:**
+
 ```ts
 const Title = styled.h1`
   color: ${({ theme }) => theme.color.textPrimary};
   margin-bottom: ${({ theme }) => theme.space.lg};
-`
+`;
 ```
 
 `ThemeProvider` is mounted in `src/main.tsx` and wraps the entire app.
@@ -236,50 +257,40 @@ const Title = styled.h1`
 
 ```
 report-viewer-pbi/
-├── report-viewer-pbi.php      # RVPBI bootstrap — constants, requires, init/activate/deactivate
+├── report-viewer-pbi.php           # RVPBI bootstrap — constants, requires, activation hooks
 ├── composer.json
+├── composer.lock
 ├── includes/
-│   ├── assets.php             # RVPBI_Assets — script/style enqueuing (dev + prod)
-│   ├── cpt.php                # powerbi_report CPT + powerbi_category taxonomy
-│   ├── report-metabox.php     # CMB2 meta boxes for the CPT
-│   ├── powerbi-settings.php   # PowerBI_Settings — CMB2 options page (Azure AD credentials)
-│   ├── powerbi-token.php      # PowerBI_Token_Provider — ROPC auth + embed config
-│   ├── powerbi-shortcode.php  # PowerBI_Shortcode — [powerbi_report] shortcode
-│   └── powerbi-rest.php       # PowerBI_REST_Controller — REST route (report-viewer-for-pbi/v1)
+│   ├── assets.php                  # RVPBI_Assets — script/style enqueuing (dev + prod)
+│   ├── cpt.php                     # powerbi_report CPT + powerbi_category taxonomy
+│   ├── report-metabox.php          # CMB2 meta boxes for report configuration
+│   ├── powerbi-settings.php        # PowerBI_Settings — CMB2 options page (Azure AD credentials)
+│   ├── powerbi-token.php           # PowerBI_Token_Provider — ROPC auth + embed config
+│   ├── powerbi-shortcode.php       # PowerBI_Shortcode — [powerbi_report] shortcode handler
+│   ├── powerbi-rest.php            # PowerBI_REST_Controller — REST route (report-viewer-for-pbi/v1)
+│   └── admin-columns.php           # PowerBI_Admin_Columns — Shortcode column with copy button
 ├── react-app/
 │   ├── index.html
-│   ├── vite.config.ts
 │   ├── package.json
+│   ├── vite.config.ts
 │   ├── tsconfig.json
+│   ├── tsconfig.node.json
 │   └── src/
-│       ├── styled.d.ts        # DefaultTheme module augmentation
-│       ├── main.tsx           # Entry — QueryClientProvider + ThemeProvider + App
-│       ├── wp-globals.d.ts    # TypeScript types for window.ReportViewerPBI
-│       ├── styles/
-│       │   └── theme.ts       # Design tokens (colors, font, spacing)
+│       ├── main.tsx                # Entry — QueryClientProvider + ThemeProvider + PowerBIReport
+│       ├── wp-globals.d.ts         # TypeScript types for window.ReportViewerPBI
+│       ├── styled.d.ts             # DefaultTheme module augmentation
 │       ├── api/
-│       │   └── api.ts         # axios client, fetchPosts(), fetchPostTypes()
+│       │   └── api.ts              # axios client + fetchEmbedConfig()
 │       ├── hooks/
-│       │   ├── usePosts.ts    # Paginated query for my-plugin/v1/posts
-│       │   └── usePostTypes.ts # Query for wp/v2/types
-│       ├── App/
-│       │   ├── App.tsx
-│       │   ├── App.styles.ts
-│       │   └── index.ts
+│       │   └── usePowerBIEmbed.ts  # TanStack Query hook (45-min stale time)
+│       ├── styles/
+│       │   └── theme.ts            # Design tokens (colors, font, spacing)
 │       └── components/
-│           ├── PaginatedTable/
-│           │   ├── PaginatedTable.tsx
-│           │   ├── PaginatedTable.styles.ts
-│           │   └── index.ts
-│           ├── PostsTable/
-│           │   ├── PostsTable.tsx
-│           │   ├── PostsTable.styles.ts
-│           │   └── index.ts
-│           └── PostTypesTable/
-│               ├── PostTypesTable.tsx
-│               ├── PostTypesTable.styles.ts
+│           └── PowerBIReport/
+│               ├── PowerBIReport.tsx
+│               ├── PowerBIReport.styles.ts
 │               └── index.ts
 ├── scripts/
-│   └── export.php             # Zip builder
-└── vendor/                    # Composer deps
+│   └── export.php                  # ZIP builder for distribution
+└── vendor/                         # Composer dependencies (CMB2)
 ```
