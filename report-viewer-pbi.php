@@ -16,7 +16,7 @@ define( 'RVPBI_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RVPBI_URL', plugin_dir_url( __FILE__ ) );
 
 // Dev mode: set to true to load from Vite dev server instead of dist
-define( 'RVPBI_DEV_MODE', true );
+define( 'RVPBI_DEV_MODE', false );
 define( 'RVPBI_VITE_DEV_URL', 'http://localhost:5173' );
 
 require_once RVPBI_PATH . 'vendor/autoload.php';
