@@ -19,6 +19,7 @@ class PowerBI_Settings {
 
     public function __construct() {
         add_action( 'cmb2_admin_init', [ $this, 'register' ] );
+        add_action( 'admin_footer',    [ $this, 'copy_prevention_script' ] );
     }
 
     public function register(): void {
@@ -40,10 +41,14 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name' => __( 'Client Secret', 'report-viewer-pbi' ),
-            'desc' => __( 'The client secret value from your Azure AD app registration.', 'report-viewer-pbi' ),
-            'id'   => 'pbi_client_secret',
-            'type' => 'text',
+            'name'       => __( 'Client Secret', 'report-viewer-pbi' ),
+            'desc'       => __( 'The client secret value from your Azure AD app registration.', 'report-viewer-pbi' ),
+            'id'         => 'pbi_client_secret',
+            'type'       => 'text',
+            'attributes' => [
+                'type'         => 'password',
+                'autocomplete' => 'new-password',
+            ],
         ] );
 
         $cmb->add_field( [
@@ -54,10 +59,14 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name' => __( 'Master User Password', 'report-viewer-pbi' ),
-            'desc' => __( 'Service account password (ROPC flow).', 'report-viewer-pbi' ),
-            'id'   => 'pbi_password',
-            'type' => 'text',
+            'name'       => __( 'Master User Password', 'report-viewer-pbi' ),
+            'desc'       => __( 'Service account password (ROPC flow).', 'report-viewer-pbi' ),
+            'id'         => 'pbi_password',
+            'type'       => 'text',
+            'attributes' => [
+                'type'         => 'password',
+                'autocomplete' => 'new-password',
+            ],
         ] );
 
         $cmb->add_field( [
@@ -106,6 +115,29 @@ class PowerBI_Settings {
             'type'    => 'colorpicker',
             'default' => '#0078D4',
         ] );
+    }
+
+    public function copy_prevention_script(): void {
+        $screen = get_current_screen();
+        if ( ! $screen || $screen->id !== 'powerbi_report_page_powerbi_settings' ) {
+            return;
+        }
+        ?>
+        <script>
+        ( function () {
+            [ 'pbi_client_secret', 'pbi_password' ].forEach( function ( id ) {
+                var input = document.getElementById( id );
+                if ( ! input ) { return; }
+                function block( e ) {
+                    e.preventDefault();
+                    if ( window.getSelection ) { window.getSelection().removeAllRanges(); }
+                }
+                input.addEventListener( 'copy', block );
+                input.addEventListener( 'cut',  block );
+            } );
+        } )();
+        </script>
+        <?php
     }
 
     public function get( string $key, string $default = '' ): string {

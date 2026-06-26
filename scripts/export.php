@@ -20,6 +20,7 @@ if ( ! is_dir( $dist_dir ) ) {
 // Files/dirs to include (relative to plugin root)
 $include = [
     'report-viewer-pbi.php',
+    'uninstall.php',
     'readme.txt',
     'composer.json',
     'includes/',
