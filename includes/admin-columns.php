@@ -16,7 +16,7 @@ class PowerBI_Admin_Columns {
     }
 
     public function add_column( array $columns ): array {
-        $columns['pbi_shortcode'] = __( 'Shortcode', 'report-viewer-pbi' );
+        $columns['pbi_shortcode'] = __( 'Shortcode', 'report-viewer-for-pbi' );
         return $columns;
     }
 
@@ -31,7 +31,7 @@ class PowerBI_Admin_Columns {
             '<code>%s</code> <button type="button" class="button button-small pbi-copy-sc" data-sc="%s">%s</button>',
             esc_html( $shortcode ),
             esc_attr( $shortcode ),
-            esc_html__( 'Copy', 'report-viewer-pbi' )
+            esc_html__( 'Copy', 'report-viewer-for-pbi' )
         );
     }
 
@@ -50,9 +50,9 @@ class PowerBI_Admin_Columns {
             if ( ! e.target.classList.contains( 'pbi-copy-sc' ) ) return;
             var btn = e.target;
             navigator.clipboard.writeText( btn.dataset.sc ).then( function () {
-                btn.textContent = '<?php echo esc_js( __( '🗸', 'report-viewer-pbi' ) ); ?>';
+                btn.textContent = '<?php echo esc_js( __( '🗸', 'report-viewer-for-pbi' ) ); ?>';
                 setTimeout( function () {
-                    btn.textContent = '<?php echo esc_js( __( 'Copy', 'report-viewer-pbi' ) ); ?>';
+                    btn.textContent = '<?php echo esc_js( __( 'Copy', 'report-viewer-for-pbi' ) ); ?>';
                 }, 1500 );
             } );
         } );

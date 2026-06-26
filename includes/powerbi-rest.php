@@ -38,7 +38,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
                             'minimum'           => 1,
                             'sanitize_callback' => 'absint',
                             'validate_callback' => 'rest_validate_request_arg',
-                            'description'       => __( 'WP post ID of the powerbi_report post.', 'report-viewer-pbi' ),
+                            'description'       => __( 'WP post ID of the powerbi_report post.', 'report-viewer-for-pbi' ),
                         ],
                     ],
                 ],
@@ -55,7 +55,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( get_post_type( $post_id ) !== 'powerbi_report' ) {
             return new WP_Error(
                 'rest_invalid_param',
-                __( 'Invalid Power BI report ID.', 'report-viewer-pbi' ),
+                __( 'Invalid Power BI report ID.', 'report-viewer-for-pbi' ),
                 [ 'status' => 400 ]
             );
         }
@@ -65,7 +65,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( $restriction === 'logged_in' && ! is_user_logged_in() ) {
             return new WP_Error(
                 'rest_forbidden',
-                __( 'You must be logged in to view this report.', 'report-viewer-pbi' ),
+                __( 'You must be logged in to view this report.', 'report-viewer-for-pbi' ),
                 [ 'status' => 401 ]
             );
         }
@@ -73,7 +73,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( $restriction === 'administrator' && ! current_user_can( 'manage_options' ) ) {
             return new WP_Error(
                 'rest_forbidden',
-                __( 'You do not have permission to view this report.', 'report-viewer-pbi' ),
+                __( 'You do not have permission to view this report.', 'report-viewer-for-pbi' ),
                 [ 'status' => 403 ]
             );
         }
@@ -94,7 +94,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( ! $report_id || ! $group_id ) {
             return new WP_Error(
                 'powerbi_misconfigured',
-                __( 'This report is not fully configured. Report ID and Group ID are required.', 'report-viewer-pbi' ),
+                __( 'This report is not fully configured. Report ID and Group ID are required.', 'report-viewer-for-pbi' ),
                 [ 'status' => 500 ]
             );
         }

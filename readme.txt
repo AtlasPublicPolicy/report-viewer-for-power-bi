@@ -43,7 +43,30 @@ The distributed ZIP includes all PHP dependencies pre-installed. Composer is onl
 
 = How do I enable development mode? =
 
-Set `RVPBI_DEV_MODE` to `true` in `report-viewer-pbi.php`, then start the Vite dev server with `cd react-app && npm run dev`.
+Set `RVPBI_DEV_MODE` to `true` in `report-viewer-for-pbi.php`, then start the Vite dev server with `cd react-app && npm run dev`.
+
+= Where is the source code? =
+
+The full source code, including the React/TypeScript frontend, is available on GitHub:
+https://github.com/AtlasPublicPolicy/report-viewer-pbi
+
+== External Services ==
+
+This plugin connects to two Microsoft services to authenticate and embed Power BI reports.
+
+= Microsoft Azure Active Directory (Entra ID) =
+
+Used to generate an OAuth access token via the Resource Owner Password Credentials (ROPC) flow. A request is sent to `https://login.microsoftonline.com` on each page load containing a Power BI report shortcode (subject to a 45-minute client-side cache). Your Azure AD credentials are stored in your WordPress database and are never sent to the browser.
+
+Privacy Policy: https://privacy.microsoft.com/en-us/privacystatement
+Terms of Use: https://azure.microsoft.com/en-us/support/legal/
+
+= Microsoft Power BI =
+
+Used to generate report embed URLs and render reports in an iframe on your site. Embed content is loaded from `https://app.powerbi.com`. The data displayed is determined entirely by your Power BI workspace configuration.
+
+Privacy Policy: https://privacy.microsoft.com/en-us/privacystatement
+Terms of Service: https://powerbi.microsoft.com/en-us/terms-of-service/
 
 == Changelog ==
 

@@ -34,7 +34,7 @@ cd react-app && npm install
 
 ### Enable dev mode in the plugin
 
-Open `report-viewer-pbi.php` and set:
+Open `report-viewer-for-pbi.php` and set:
 
 ```php
 define( 'RVPBI_DEV_MODE', true );
@@ -62,9 +62,9 @@ composer run build
 This will:
 
 1. `npm ci && npm run build` inside `react-app/` → outputs to `react-app/dist/`
-2. Run `scripts/export.php` → creates `report-viewer-pbi.zip`
+2. Run `scripts/export.php` → creates `report-viewer-for-pbi.zip`
 
-Upload `report-viewer-pbi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
+Upload `report-viewer-for-pbi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
 
 > **Remember** to set `RVPBI_DEV_MODE` back to `false` before building.
 
@@ -77,7 +77,7 @@ The [WordPress Plugin Check (PCP)](https://wordpress.org/plugins/plugin-check/) 
 ### Option A — WP-CLI (recommended)
 
 ```bash
-wp plugin check report-viewer-pbi
+wp plugin check report-viewer-for-pbi
 ```
 
 Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if needed). Results print directly to the terminal.
@@ -93,7 +93,7 @@ Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if n
 Pipe WP-CLI output to a markdown file for review:
 
 ```bash
-wp plugin check report-viewer-pbi --format=csv > PLUGINCHECK.csv
+wp plugin check report-viewer-for-pbi --format=csv > PLUGINCHECK.csv
 ```
 
 Or use the `--format=json` flag if you prefer structured output.
@@ -256,8 +256,8 @@ const Title = styled.h1`
 ## Project Structure
 
 ```
-report-viewer-pbi/
-├── report-viewer-pbi.php           # RVPBI bootstrap — constants, requires, activation hooks
+report-viewer-for-pbi/
+├── report-viewer-for-pbi.php           # RVPBI bootstrap — constants, requires, activation hooks
 ├── composer.json
 ├── composer.lock
 ├── includes/
