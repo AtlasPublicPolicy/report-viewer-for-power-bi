@@ -15,7 +15,7 @@ export interface EmbedConfig {
 }
 
 export async function fetchEmbedConfig(postId: number): Promise<EmbedConfig> {
-  const res = await client.get('report-viewer-for-pbi/v1/powerbi/embed', {
+  const res = await client.get('report-viewer-for-power-bi/v1/powerbi/embed', {
     params: { post_id: postId },
   })
   return res.data

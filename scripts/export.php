@@ -9,8 +9,8 @@
 
 $root      = dirname( __DIR__ );
 $dist_dir  = $root . '/react-app/dist';
-$zip_path  = dirname( $root ) . '/report-viewer-for-pbi.zip';  // one level above plugin root
-$slug      = 'report-viewer-for-pbi';
+$zip_path  = dirname( $root ) . '/report-viewer-for-power-bi.zip';  // one level above plugin root
+$slug      = 'report-viewer-for-power-bi';
 
 if ( ! is_dir( $dist_dir ) ) {
     echo "ERROR: react-app/dist not found. Run `composer run build:react` first.\n";
@@ -19,7 +19,7 @@ if ( ! is_dir( $dist_dir ) ) {
 
 // Files/dirs to include (relative to plugin root)
 $include = [
-    'report-viewer-for-pbi.php',
+    'report-viewer-for-power-bi.php',
     'uninstall.php',
     'readme.txt',
     'composer.json',
@@ -44,7 +44,7 @@ foreach ( $include as $item ) {
 
     if ( is_file( $full ) ) {
         // Force dev mode off in the main plugin file so the ZIP always ships production-ready.
-        if ( $item === 'report-viewer-for-pbi.php' ) {
+        if ( $item === 'report-viewer-for-power-bi.php' ) {
             $contents = file_get_contents( $full );
             $contents = preg_replace(
                 "/define\(\s*'RVPBI_DEV_MODE'\s*,\s*(true|false)\s*\)/",

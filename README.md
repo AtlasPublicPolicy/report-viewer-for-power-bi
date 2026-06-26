@@ -34,7 +34,7 @@ cd react-app && npm install
 
 ### Enable dev mode in the plugin
 
-Open `report-viewer-for-pbi.php` and set:
+Open `report-viewer-for-power-bi.php` and set:
 
 ```php
 define( 'RVPBI_DEV_MODE', true );
@@ -62,9 +62,9 @@ composer run build
 This will:
 
 1. `npm ci && npm run build` inside `react-app/` → outputs to `react-app/dist/`
-2. Run `scripts/export.php` → creates `report-viewer-for-pbi.zip`
+2. Run `scripts/export.php` → creates `report-viewer-for-power-bi.zip`
 
-Upload `report-viewer-for-pbi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
+Upload `report-viewer-for-power-bi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
 
 > **Remember** to set `RVPBI_DEV_MODE` back to `false` before building.
 
@@ -77,7 +77,7 @@ The [WordPress Plugin Check (PCP)](https://wordpress.org/plugins/plugin-check/) 
 ### Option A — WP-CLI (recommended)
 
 ```bash
-wp plugin check report-viewer-for-pbi
+wp plugin check report-viewer-for-power-bi
 ```
 
 Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if needed). Results print directly to the terminal.
@@ -93,7 +93,7 @@ Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if n
 Pipe WP-CLI output to a markdown file for review:
 
 ```bash
-wp plugin check report-viewer-for-pbi --format=csv > PLUGINCHECK.csv
+wp plugin check report-viewer-for-power-bi --format=csv > PLUGINCHECK.csv
 ```
 
 Or use the `--format=json` flag if you prefer structured output.
@@ -121,9 +121,9 @@ Or use the `--format=json` flag if you prefer structured output.
 
 ## REST API
 
-The plugin registers a custom REST namespace at `report-viewer-for-pbi/v1`.
+The plugin registers a custom REST namespace at `report-viewer-for-power-bi/v1`.
 
-### `GET /wp-json/report-viewer-for-pbi/v1/powerbi/embed`
+### `GET /wp-json/report-viewer-for-power-bi/v1/powerbi/embed`
 
 Returns the embed configuration needed by the `powerbi-client-react` component. Token generation is performed server-side so credentials never reach the browser.
 
@@ -136,7 +136,7 @@ Returns the embed configuration needed by the `powerbi-client-react` component. 
 **Example request:**
 
 ```
-GET /wp-json/report-viewer-for-pbi/v1/powerbi/embed?post_id=42
+GET /wp-json/report-viewer-for-power-bi/v1/powerbi/embed?post_id=42
 ```
 
 **Example response:**
@@ -256,8 +256,8 @@ const Title = styled.h1`
 ## Project Structure
 
 ```
-report-viewer-for-pbi/
-├── report-viewer-for-pbi.php           # RVPBI bootstrap — constants, requires, activation hooks
+report-viewer-for-power-bi/
+├── report-viewer-for-power-bi.php      # RVPBI bootstrap — constants, requires, activation hooks
 ├── composer.json
 ├── composer.lock
 ├── includes/
@@ -267,7 +267,7 @@ report-viewer-for-pbi/
 │   ├── powerbi-settings.php        # PowerBI_Settings — CMB2 options page (Azure AD credentials)
 │   ├── powerbi-token.php           # PowerBI_Token_Provider — ROPC auth + embed config
 │   ├── powerbi-shortcode.php       # PowerBI_Shortcode — [powerbi_report] shortcode handler
-│   ├── powerbi-rest.php            # PowerBI_REST_Controller — REST route (report-viewer-for-pbi/v1)
+│   ├── powerbi-rest.php            # PowerBI_REST_Controller — REST route (report-viewer-for-power-bi/v1)
 │   └── admin-columns.php           # PowerBI_Admin_Columns — Shortcode column with copy button
 ├── react-app/
 │   ├── index.html

@@ -89,7 +89,7 @@ class PowerBI_Token_Provider {
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( empty( $body['access_token'] ) ) {
-            $message = $body['error_description'] ?? __( 'Failed to retrieve Azure AD access token.', 'report-viewer-for-pbi' );
+            $message = $body['error_description'] ?? __( 'Failed to retrieve Azure AD access token.', 'report-viewer-for-power-bi' );
             return new WP_Error( 'powerbi_auth_failed', $message );
         }
 

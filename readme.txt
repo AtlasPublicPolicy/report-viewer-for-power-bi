@@ -25,7 +25,7 @@ Features:
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/report-viewer-for-pbi` directory, or install via the WordPress plugin screen.
+1. Upload the plugin files to the `/wp-content/plugins/report-viewer-for-power-bi` directory, or install via the WordPress plugin screen.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Go to **Power BI Reports → Settings** and enter your Azure AD credentials.
 4. Create a **Power BI Report** post and enter the Report ID and Group/Workspace ID.
@@ -43,12 +43,12 @@ The distributed ZIP includes all PHP dependencies pre-installed. Composer is onl
 
 = How do I enable development mode? =
 
-Set `RVPBI_DEV_MODE` to `true` in `report-viewer-for-pbi.php`, then start the Vite dev server with `cd react-app && npm run dev`.
+Set `RVPBI_DEV_MODE` to `true` in `report-viewer-for-power-bi.php`, then start the Vite dev server with `cd react-app && npm run dev`.
 
 = Where is the source code? =
 
 The full source code, including the React/TypeScript frontend, is available on GitHub:
-https://github.com/AtlasPublicPolicy/report-viewer-pbi
+https://github.com/AtlasPublicPolicy/report-viewer-for-power-bi
 
 == External Services ==
 

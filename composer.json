@@ -1,5 +1,5 @@
 {
-    "name": "atlaspolicy/report-viewer-for-pbi",
+    "name": "atlaspolicy/report-viewer-for-power-bi",
     "description": "Embed Power BI reports and dashboards in WordPress via shortcode with server-side Azure AD authentication.",
     "type": "wordpress-plugin",
     "require": {
