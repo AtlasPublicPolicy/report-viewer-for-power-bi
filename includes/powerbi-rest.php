@@ -111,6 +111,8 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
             $config['pageName'] = $page_name;
         }
 
+        $config['filterPaneEnabled'] = ( get_post_meta( $post_id, 'pbi_filter_pane', true ) ?: '1' ) === '1';
+
         $response = rest_ensure_response( $config );
 
         // Prevent caching plugins from storing the embed token.

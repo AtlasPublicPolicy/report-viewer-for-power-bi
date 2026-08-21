@@ -12,6 +12,7 @@ export interface EmbedConfig {
   reportId: string
   embedType: 'report' | 'dashboard'
   pageName?: string
+  filterPaneEnabled?: boolean
 }
 
 export async function fetchEmbedConfig(postId: number): Promise<EmbedConfig> {

@@ -151,7 +151,7 @@ export function PowerBIReport({ postId, width, height }: Props) {
             pageName: data.pageName,
             settings: {
               navContentPaneEnabled: false,
-              filterPaneEnabled: false,
+              filterPaneEnabled: data.filterPaneEnabled ?? false,
               ...FIT_TO_WIDTH,
             },
           }}

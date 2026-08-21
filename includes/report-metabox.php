@@ -79,6 +79,19 @@ function powerbi_register_report_metabox(): void {
         'default' => '600px',
     ] );
 
+    // Filter pane
+    $cmb->add_field( [
+        'name'    => __( 'Show Filter Pane', 'report-viewer-for-power-bi' ),
+        'desc'    => __( 'Display the Power BI filter pane alongside the report.', 'report-viewer-for-power-bi' ),
+        'id'      => 'pbi_filter_pane',
+        'type'    => 'select',
+        'default' => '1',
+        'options' => [
+            '1' => __( 'Yes', 'report-viewer-for-power-bi' ),
+            '0' => __( 'No', 'report-viewer-for-power-bi' ),
+        ],
+    ] );
+
     // Content restriction
     $cmb->add_field( [
         'name'    => __( 'Content Restriction', 'report-viewer-for-power-bi' ),
