@@ -4,6 +4,7 @@
  * Description:  Embed Power BI reports and dashboards in WordPress pages via shortcode, with Azure AD authentication managed through a settings page.
  * Version:      1.0.0
  * Author:       Atlas Public Policy
+ * Author URI:   https://atlaspolicy.com/
  * Text Domain:  report-viewer-for-power-bi
  * License:      GPL-2.0-or-later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
