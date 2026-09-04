@@ -50,6 +50,21 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
      * Enforces content restriction based on the post's pbi_restriction meta.
      */
     public function check_permissions( WP_REST_Request $request ): bool|WP_Error {
+        // Rate limit: 30 embed requests per minute per IP.
+        $ip       = $_SERVER['REMOTE_ADDR'] ?? 'unknown'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+        $rate_key = 'rvpbi_rate_' . md5( $ip );
+        $count    = (int) get_transient( $rate_key );
+
+        if ( $count >= 30 ) {
+            return new WP_Error(
+                'rest_rate_limited',
+                __( 'Too many requests. Please try again later.', 'report-viewer-for-power-bi' ),
+                [ 'status' => 429 ]
+            );
+        }
+
+        set_transient( $rate_key, $count + 1, MINUTE_IN_SECONDS );
+
         $post_id = absint( $request->get_param( 'post_id' ) );
 
         if ( get_post_type( $post_id ) !== 'powerbi_report' ) {

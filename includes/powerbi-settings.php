@@ -23,6 +23,11 @@ class PowerBI_Settings {
         add_action( 'cmb2_admin_init', [ $this, 'register' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_copy_prevention' ] );
         add_action( 'admin_init', [ $this, 'maybe_migrate_credentials' ] );
+
+        // Flush the cached Azure AD token when credentials are changed.
+        add_action( 'update_option_powerbi_settings', function () {
+            delete_transient( 'rvpbi_access_token' );
+        } );
     }
 
     public function register(): void {

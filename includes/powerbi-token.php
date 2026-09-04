@@ -64,7 +64,17 @@ class PowerBI_Token_Provider {
      *
      * @return string|WP_Error
      */
+    private const CACHE_KEY      = 'rvpbi_access_token';
+    private const EXPIRY_MARGIN  = 300; // Refresh 5 minutes before actual expiry.
+    private const MIN_CACHE_TTL  = 60;
+
     private function get_access_token(): string|WP_Error {
+        // Return cached token if it has enough lifetime remaining.
+        $cached = get_transient( self::CACHE_KEY );
+        if ( $cached !== false && $this->token_is_valid( $cached ) ) {
+            return $cached;
+        }
+
         // /common/ endpoint resolves the tenant from the username (UPN),
         // so no tenant ID is needed for the ROPC flow.
         $response = wp_remote_post(
@@ -104,6 +114,29 @@ class PowerBI_Token_Provider {
             );
         }
 
+        $expires_in = isset( $body['expires_in'] ) ? (int) $body['expires_in'] : 3600;
+        $ttl        = max( self::MIN_CACHE_TTL, $expires_in - self::EXPIRY_MARGIN );
+        set_transient( self::CACHE_KEY, $body['access_token'], $ttl );
+
         return $body['access_token'];
+    }
+
+    /**
+     * Checks whether a cached JWT still has enough lifetime remaining.
+     */
+    private function token_is_valid( string $token ): bool {
+        $parts = explode( '.', $token );
+        if ( ! isset( $parts[1] ) ) {
+            return false;
+        }
+
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
+        $payload = json_decode( base64_decode( strtr( $parts[1], '-_', '+/' ) ), true );
+
+        if ( empty( $payload['exp'] ) ) {
+            return false;
+        }
+
+        return ( $payload['exp'] - time() ) > self::EXPIRY_MARGIN;
     }
 }
