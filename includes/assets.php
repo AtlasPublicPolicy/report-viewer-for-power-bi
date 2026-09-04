@@ -26,22 +26,36 @@ class RVPBI_Assets {
             // Production: load manifest-driven assets from /react-app/dist/
             $manifest_path = RVPBI_PATH . 'react-app/dist/.vite/manifest.json';
 
-            if ( ! file_exists( $manifest_path ) ) {
+            if ( ! file_exists( $manifest_path ) || ! is_readable( $manifest_path ) ) {
                 return; // dist not built yet
             }
 
-            $manifest = json_decode( file_get_contents( $manifest_path ), true );
-            $entry    = $manifest['index.html'] ?? $manifest['src/main.tsx'] ?? null;
+            $manifest_contents = file_get_contents( $manifest_path );
+            if ( $manifest_contents === false ) {
+                return;
+            }
 
-            if ( ! $entry ) {
+            $manifest = json_decode( $manifest_contents, true );
+            if ( ! is_array( $manifest ) ) {
+                return;
+            }
+
+            $entry = $manifest['index.html'] ?? $manifest['src/main.tsx'] ?? null;
+
+            if ( ! $entry || empty( $entry['file'] ) ) {
                 return;
             }
 
             $dist_url = RVPBI_URL . 'react-app/dist/';
 
+            $js_path = $this->validate_dist_path( $entry['file'] );
+            if ( ! $js_path ) {
+                return;
+            }
+
             wp_enqueue_script(
                 'rvpbi-app',
-                $dist_url . $entry['file'],
+                $dist_url . $js_path,
                 [],
                 RVPBI_VERSION,
                 true
@@ -50,9 +64,13 @@ class RVPBI_Assets {
             // Enqueue CSS chunks if present.
             if ( ! empty( $entry['css'] ) ) {
                 foreach ( $entry['css'] as $i => $css_file ) {
+                    $css_path = $this->validate_dist_path( $css_file );
+                    if ( ! $css_path ) {
+                        continue;
+                    }
                     wp_enqueue_style(
                         'rvpbi-style-' . $i,
-                        $dist_url . $css_file,
+                        $dist_url . $css_path,
                         [],
                         RVPBI_VERSION
                     );
@@ -76,6 +94,28 @@ class RVPBI_Assets {
             return str_replace( '<script ', '<script type="module" ', $tag );
         }
         return $tag;
+    }
+
+    /**
+     * Validates that a manifest-provided path stays within react-app/dist/.
+     */
+    private function validate_dist_path( string $relative_path ): ?string {
+        if ( preg_match( '/\.\.[\\/\\\\]/', $relative_path ) ) {
+            return null;
+        }
+
+        $dist_dir  = realpath( RVPBI_PATH . 'react-app/dist' );
+        $full_path = realpath( RVPBI_PATH . 'react-app/dist/' . $relative_path );
+
+        if ( ! $dist_dir || ! $full_path ) {
+            return null;
+        }
+
+        if ( strpos( $full_path, $dist_dir . DIRECTORY_SEPARATOR ) !== 0 ) {
+            return null;
+        }
+
+        return $relative_path;
     }
 
     /**
