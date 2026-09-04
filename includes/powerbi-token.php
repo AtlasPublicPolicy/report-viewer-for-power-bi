@@ -83,14 +83,25 @@ class PowerBI_Token_Provider {
         );
 
         if ( is_wp_error( $response ) ) {
-            return $response;
+            error_log( sprintf( '[Report Viewer for Power BI] HTTP request failed: %s', $response->get_error_message() ) );
+            return new WP_Error(
+                'powerbi_auth_failed',
+                __( 'Authentication failed. Please check the Power BI settings.', 'report-viewer-for-power-bi' ),
+                [ 'status' => 500 ]
+            );
         }
 
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
 
         if ( empty( $body['access_token'] ) ) {
-            $message = $body['error_description'] ?? __( 'Failed to retrieve Azure AD access token.', 'report-viewer-for-power-bi' );
-            return new WP_Error( 'powerbi_auth_failed', $message );
+            if ( ! empty( $body['error_description'] ) ) {
+                error_log( sprintf( '[Report Viewer for Power BI] Azure AD auth error: %s', $body['error_description'] ) );
+            }
+            return new WP_Error(
+                'powerbi_auth_failed',
+                __( 'Authentication failed. Please check the Power BI settings.', 'report-viewer-for-power-bi' ),
+                [ 'status' => 500 ]
+            );
         }
 
         return $body['access_token'];
