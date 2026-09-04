@@ -17,9 +17,12 @@ defined( 'ABSPATH' ) || exit;
 
 class PowerBI_Settings {
 
+    private const SENSITIVE_KEYS = [ 'pbi_client_secret', 'pbi_password' ];
+
     public function __construct() {
         add_action( 'cmb2_admin_init', [ $this, 'register' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_copy_prevention' ] );
+        add_action( 'admin_init', [ $this, 'maybe_migrate_credentials' ] );
     }
 
     public function register(): void {
@@ -41,14 +44,15 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name'       => __( 'Client Secret', 'report-viewer-for-power-bi' ),
-            'desc'       => __( 'The client secret value from your Azure AD app registration.', 'report-viewer-for-power-bi' ),
-            'id'         => 'pbi_client_secret',
-            'type'       => 'text',
-            'attributes' => [
+            'name'            => __( 'Client Secret', 'report-viewer-for-power-bi' ),
+            'desc'            => __( 'The client secret value from your Azure AD app registration.', 'report-viewer-for-power-bi' ),
+            'id'              => 'pbi_client_secret',
+            'type'            => 'text',
+            'attributes'      => [
                 'type'         => 'password',
                 'autocomplete' => 'new-password',
             ],
+            'sanitization_cb' => [ $this, 'encrypt_field' ],
         ] );
 
         $cmb->add_field( [
@@ -59,14 +63,15 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name'       => __( 'Master User Password', 'report-viewer-for-power-bi' ),
-            'desc'       => __( 'Service account password (ROPC flow).', 'report-viewer-for-power-bi' ),
-            'id'         => 'pbi_password',
-            'type'       => 'text',
-            'attributes' => [
+            'name'            => __( 'Master User Password', 'report-viewer-for-power-bi' ),
+            'desc'            => __( 'Service account password (ROPC flow).', 'report-viewer-for-power-bi' ),
+            'id'              => 'pbi_password',
+            'type'            => 'text',
+            'attributes'      => [
                 'type'         => 'password',
                 'autocomplete' => 'new-password',
             ],
+            'sanitization_cb' => [ $this, 'encrypt_field' ],
         ] );
 
         $cmb->add_field( [
@@ -143,7 +148,64 @@ class PowerBI_Settings {
 
     public function get( string $key, string $default = '' ): string {
         $options = get_option( 'powerbi_settings', [] );
-        return (string) ( $options[ $key ] ?? $default );
+        $value   = (string) ( $options[ $key ] ?? $default );
+
+        if ( in_array( $key, self::SENSITIVE_KEYS, true ) && RVPBI_Crypto::is_encrypted( $value ) ) {
+            $value = RVPBI_Crypto::decrypt( $value );
+        }
+
+        return $value;
+    }
+
+    /**
+     * CMB2 sanitization callback — encrypts sensitive field values before storage.
+     *
+     * @param mixed $value      The field value.
+     * @param array $field_args The field arguments.
+     * @param \CMB2_Field $field The field object.
+     * @return string
+     */
+    public function encrypt_field( $value, $field_args, $field ): string {
+        $value = (string) $value;
+
+        if ( $value === '' ) {
+            return '';
+        }
+
+        // Don't double-encrypt on re-save without changes.
+        if ( RVPBI_Crypto::is_encrypted( $value ) ) {
+            return $value;
+        }
+
+        return RVPBI_Crypto::encrypt( $value );
+    }
+
+    /**
+     * One-time migration: encrypts any existing plaintext credentials.
+     */
+    public function maybe_migrate_credentials(): void {
+        $options = get_option( 'powerbi_settings', [] );
+
+        if ( ! empty( $options['_credentials_encrypted'] ) ) {
+            return;
+        }
+
+        // Don't set the flag if OpenSSL isn't available — allow retry after PHP upgrade.
+        if ( ! function_exists( 'openssl_encrypt' ) ) {
+            return;
+        }
+
+        foreach ( self::SENSITIVE_KEYS as $key ) {
+            if ( ! empty( $options[ $key ] ) && ! RVPBI_Crypto::is_encrypted( $options[ $key ] ) ) {
+                $encrypted = RVPBI_Crypto::encrypt( $options[ $key ] );
+                if ( RVPBI_Crypto::is_encrypted( $encrypted ) ) {
+                    $options[ $key ] = $encrypted;
+                }
+            }
+        }
+
+        $options['_credentials_encrypted'] = true;
+        update_option( 'powerbi_settings', $options );
     }
 }
 

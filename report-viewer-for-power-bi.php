@@ -26,6 +26,7 @@ require_once RVPBI_PATH . 'vendor/cmb2/init.php';
 require_once RVPBI_PATH . 'includes/assets.php';
 
 // -- Power BI --
+require_once RVPBI_PATH . 'includes/crypto.php';
 require_once RVPBI_PATH . 'includes/cpt.php';
 require_once RVPBI_PATH . 'includes/report-metabox.php';
 require_once RVPBI_PATH . 'includes/powerbi-settings.php';
