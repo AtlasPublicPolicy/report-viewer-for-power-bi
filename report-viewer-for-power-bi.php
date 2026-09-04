@@ -49,28 +49,18 @@ class RVPBI {
     }
 
     /**
-     * Grants the powerbi_view capability to administrators on activation.
-     */
-    public static function activate(): void {
-        $admin = get_role( 'administrator' );
-        if ( $admin ) {
-            $admin->add_cap( 'powerbi_view' );
-        }
-    }
-
-    /**
-     * Removes the powerbi_view capability from all roles on deactivation.
+     * Cleans up the legacy powerbi_view capability from all roles.
+     * Kept for one release cycle so existing installs are cleaned up on deactivation.
      */
     public static function deactivate(): void {
         foreach ( wp_roles()->roles as $role_name => $_ ) {
             $role = get_role( $role_name );
-            if ( $role ) {
+            if ( $role && $role->has_cap( 'powerbi_view' ) ) {
                 $role->remove_cap( 'powerbi_view' );
             }
         }
     }
 }
 
-register_activation_hook( __FILE__, [ 'RVPBI', 'activate' ] );
 register_deactivation_hook( __FILE__, [ 'RVPBI', 'deactivate' ] );
 add_action( 'plugins_loaded', [ 'RVPBI', 'init' ] );
