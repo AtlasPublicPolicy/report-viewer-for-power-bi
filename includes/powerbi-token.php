@@ -96,7 +96,7 @@ class PowerBI_Token_Provider {
             $this->log( sprintf( 'HTTP request failed: %s', $response->get_error_message() ) );
             return new WP_Error(
                 'powerbi_auth_failed',
-                __( 'Authentication failed. Please check the Power BI settings.', 'report-viewer-for-power-bi' ),
+                __( 'Authentication failed. Please check the Power BI settings.', 'atlas-report-viewer-for-power-bi' ),
                 [ 'status' => 500 ]
             );
         }
@@ -109,7 +109,7 @@ class PowerBI_Token_Provider {
             }
             return new WP_Error(
                 'powerbi_auth_failed',
-                __( 'Authentication failed. Please check the Power BI settings.', 'report-viewer-for-power-bi' ),
+                __( 'Authentication failed. Please check the Power BI settings.', 'atlas-report-viewer-for-power-bi' ),
                 [ 'status' => 500 ]
             );
         }

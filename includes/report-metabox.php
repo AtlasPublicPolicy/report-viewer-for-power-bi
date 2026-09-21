@@ -19,7 +19,7 @@ add_action( 'cmb2_admin_init', 'powerbi_register_report_metabox' );
 function powerbi_register_report_metabox(): void {
     $cmb = new_cmb2_box( [
         'id'           => 'powerbi_report_meta',
-        'title'        => __( 'Report Configuration', 'report-viewer-for-power-bi' ),
+        'title'        => __( 'Report Configuration', 'atlas-report-viewer-for-power-bi' ),
         'object_types' => [ 'powerbi_report' ],
         'context'      => 'normal',
         'priority'     => 'high',
@@ -27,16 +27,16 @@ function powerbi_register_report_metabox(): void {
 
     // Power BI IDs
     $cmb->add_field( [
-        'name'       => __( 'Report ID', 'report-viewer-for-power-bi' ),
-        'desc'       => __( 'The Power BI report GUID.', 'report-viewer-for-power-bi' ),
+        'name'       => __( 'Report ID', 'atlas-report-viewer-for-power-bi' ),
+        'desc'       => __( 'The Power BI report GUID.', 'atlas-report-viewer-for-power-bi' ),
         'id'         => 'pbi_report_id',
         'type'       => 'text',
         'attributes' => [ 'required' => 'required' ],
     ] );
 
     $cmb->add_field( [
-        'name'       => __( 'Group / Workspace ID', 'report-viewer-for-power-bi' ),
-        'desc'       => __( 'The Power BI workspace (group) GUID.', 'report-viewer-for-power-bi' ),
+        'name'       => __( 'Group / Workspace ID', 'atlas-report-viewer-for-power-bi' ),
+        'desc'       => __( 'The Power BI workspace (group) GUID.', 'atlas-report-viewer-for-power-bi' ),
         'id'         => 'pbi_group_id',
         'type'       => 'text',
         'attributes' => [ 'required' => 'required' ],
@@ -44,36 +44,36 @@ function powerbi_register_report_metabox(): void {
 
     // Embed type
     $cmb->add_field( [
-        'name'    => __( 'Embed Type', 'report-viewer-for-power-bi' ),
+        'name'    => __( 'Embed Type', 'atlas-report-viewer-for-power-bi' ),
         'id'      => 'pbi_embed_type',
         'type'    => 'select',
         'default' => 'report',
         'options' => [
-            'report'    => __( 'Report', 'report-viewer-for-power-bi' ),
-            'dashboard' => __( 'Dashboard', 'report-viewer-for-power-bi' ),
+            'report'    => __( 'Report', 'atlas-report-viewer-for-power-bi' ),
+            'dashboard' => __( 'Dashboard', 'atlas-report-viewer-for-power-bi' ),
         ],
     ] );
 
     // Optional page name (for paginated reports)
     $cmb->add_field( [
-        'name' => __( 'Page Name', 'report-viewer-for-power-bi' ),
-        'desc' => __( 'Optional. Opens a specific page/tab within the report.', 'report-viewer-for-power-bi' ),
+        'name' => __( 'Page Name', 'atlas-report-viewer-for-power-bi' ),
+        'desc' => __( 'Optional. Opens a specific page/tab within the report.', 'atlas-report-viewer-for-power-bi' ),
         'id'   => 'pbi_page_name',
         'type' => 'text',
     ] );
 
     // Display dimensions
     $cmb->add_field( [
-        'name'    => __( 'Width', 'report-viewer-for-power-bi' ),
-        'desc'    => __( 'CSS width value, e.g. 100% or 800px.', 'report-viewer-for-power-bi' ),
+        'name'    => __( 'Width', 'atlas-report-viewer-for-power-bi' ),
+        'desc'    => __( 'CSS width value, e.g. 100% or 800px.', 'atlas-report-viewer-for-power-bi' ),
         'id'      => 'pbi_width',
         'type'    => 'text_small',
         'default' => '100%',
     ] );
 
     $cmb->add_field( [
-        'name'    => __( 'Min Height', 'report-viewer-for-power-bi' ),
-        'desc'    => __( 'Initial container height before the report loads (e.g. 600px). Once the report renders, the height automatically adjusts to match the report\'s aspect ratio.', 'report-viewer-for-power-bi' ),
+        'name'    => __( 'Min Height', 'atlas-report-viewer-for-power-bi' ),
+        'desc'    => __( 'Initial container height before the report loads (e.g. 600px). Once the report renders, the height automatically adjusts to match the report\'s aspect ratio.', 'atlas-report-viewer-for-power-bi' ),
         'id'      => 'pbi_height',
         'type'    => 'text_small',
         'default' => '600px',
@@ -81,28 +81,28 @@ function powerbi_register_report_metabox(): void {
 
     // Filter pane
     $cmb->add_field( [
-        'name'    => __( 'Show Filter Pane', 'report-viewer-for-power-bi' ),
-        'desc'    => __( 'Display the Power BI filter pane alongside the report.', 'report-viewer-for-power-bi' ),
+        'name'    => __( 'Show Filter Pane', 'atlas-report-viewer-for-power-bi' ),
+        'desc'    => __( 'Display the Power BI filter pane alongside the report.', 'atlas-report-viewer-for-power-bi' ),
         'id'      => 'pbi_filter_pane',
         'type'    => 'select',
         'default' => '1',
         'options' => [
-            '1' => __( 'Yes', 'report-viewer-for-power-bi' ),
-            '0' => __( 'No', 'report-viewer-for-power-bi' ),
+            '1' => __( 'Yes', 'atlas-report-viewer-for-power-bi' ),
+            '0' => __( 'No', 'atlas-report-viewer-for-power-bi' ),
         ],
     ] );
 
     // Content restriction
     $cmb->add_field( [
-        'name'    => __( 'Content Restriction', 'report-viewer-for-power-bi' ),
-        'desc'    => __( 'Who can view the embedded report on the front end.', 'report-viewer-for-power-bi' ),
+        'name'    => __( 'Content Restriction', 'atlas-report-viewer-for-power-bi' ),
+        'desc'    => __( 'Who can view the embedded report on the front end.', 'atlas-report-viewer-for-power-bi' ),
         'id'      => 'pbi_restriction',
         'type'    => 'select',
         'default' => 'public',
         'options' => [
-            'public'        => __( 'Public — anyone', 'report-viewer-for-power-bi' ),
-            'logged_in'     => __( 'Logged-in users only', 'report-viewer-for-power-bi' ),
-            'administrator' => __( 'Administrators only', 'report-viewer-for-power-bi' ),
+            'public'        => __( 'Public — anyone', 'atlas-report-viewer-for-power-bi' ),
+            'logged_in'     => __( 'Logged-in users only', 'atlas-report-viewer-for-power-bi' ),
+            'administrator' => __( 'Administrators only', 'atlas-report-viewer-for-power-bi' ),
         ],
     ] );
 }
