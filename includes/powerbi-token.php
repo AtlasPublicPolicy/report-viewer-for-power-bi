@@ -93,7 +93,7 @@ class PowerBI_Token_Provider {
         );
 
         if ( is_wp_error( $response ) ) {
-            error_log( sprintf( '[Report Viewer for Power BI] HTTP request failed: %s', $response->get_error_message() ) );
+            $this->log( sprintf( 'HTTP request failed: %s', $response->get_error_message() ) );
             return new WP_Error(
                 'powerbi_auth_failed',
                 __( 'Authentication failed. Please check the Power BI settings.', 'report-viewer-for-power-bi' ),
@@ -105,7 +105,7 @@ class PowerBI_Token_Provider {
 
         if ( empty( $body['access_token'] ) ) {
             if ( ! empty( $body['error_description'] ) ) {
-                error_log( sprintf( '[Report Viewer for Power BI] Azure AD auth error: %s', $body['error_description'] ) );
+                $this->log( sprintf( 'Azure AD auth error: %s', $body['error_description'] ) );
             }
             return new WP_Error(
                 'powerbi_auth_failed',
@@ -119,6 +119,23 @@ class PowerBI_Token_Provider {
         set_transient( self::CACHE_KEY, $body['access_token'], $ttl );
 
         return $body['access_token'];
+    }
+
+    /**
+     * Writes a diagnostic message to the PHP error log.
+     *
+     * Only runs when WP_DEBUG is enabled, so nothing is logged on a normal
+     * production site. Azure AD failure details are kept out of the HTTP
+     * response, so this is how a site owner diagnoses a misconfiguration:
+     * turn on WP_DEBUG, reload the report, and read the log.
+     */
+    private function log( string $message ): void {
+        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
+            return;
+        }
+
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+        error_log( '[Report Viewer for Power BI] ' . $message );
     }
 
     /**
