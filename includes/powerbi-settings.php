@@ -33,24 +33,24 @@ class PowerBI_Settings {
     public function register(): void {
         $cmb = new_cmb2_box( [
             'id'           => 'powerbi_settings_page',
-            'title'        => __( 'Power BI Settings', 'atlas-report-viewer-for-power-bi' ),
+            'title'        => __( 'Power BI Settings', 'report-viewer-for-power-bi' ),
             'object_types' => [ 'options-page' ],
             'option_key'   => 'powerbi_settings',
             'parent_slug'  => 'edit.php?post_type=powerbi_report',
             'capability'   => 'manage_options',
-            'menu_title'   => __( 'Settings', 'atlas-report-viewer-for-power-bi' ),
+            'menu_title'   => __( 'Settings', 'report-viewer-for-power-bi' ),
         ] );
 
         $cmb->add_field( [
-            'name' => __( 'Client ID', 'atlas-report-viewer-for-power-bi' ),
-            'desc' => __( 'The application (client) ID of your Azure AD app registration.', 'atlas-report-viewer-for-power-bi' ),
+            'name' => __( 'Client ID', 'report-viewer-for-power-bi' ),
+            'desc' => __( 'The application (client) ID of your Azure AD app registration.', 'report-viewer-for-power-bi' ),
             'id'   => 'pbi_client_id',
             'type' => 'text',
         ] );
 
         $cmb->add_field( [
-            'name'            => __( 'Client Secret', 'atlas-report-viewer-for-power-bi' ),
-            'desc'            => __( 'The client secret value from your Azure AD app registration.', 'atlas-report-viewer-for-power-bi' ),
+            'name'            => __( 'Client Secret', 'report-viewer-for-power-bi' ),
+            'desc'            => __( 'The client secret value from your Azure AD app registration.', 'report-viewer-for-power-bi' ),
             'id'              => 'pbi_client_secret',
             'type'            => 'text',
             'attributes'      => [
@@ -61,15 +61,15 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name' => __( 'Master User (UPN)', 'atlas-report-viewer-for-power-bi' ),
-            'desc' => __( 'Service account email address (ROPC flow). Requires MFA disabled on this account.', 'atlas-report-viewer-for-power-bi' ),
+            'name' => __( 'Master User (UPN)', 'report-viewer-for-power-bi' ),
+            'desc' => __( 'Service account email address (ROPC flow). Requires MFA disabled on this account.', 'report-viewer-for-power-bi' ),
             'id'   => 'pbi_username',
             'type' => 'text',
         ] );
 
         $cmb->add_field( [
-            'name'            => __( 'Master User Password', 'atlas-report-viewer-for-power-bi' ),
-            'desc'            => __( 'Service account password (ROPC flow).', 'atlas-report-viewer-for-power-bi' ),
+            'name'            => __( 'Master User Password', 'report-viewer-for-power-bi' ),
+            'desc'            => __( 'Service account password (ROPC flow).', 'report-viewer-for-power-bi' ),
             'id'              => 'pbi_password',
             'type'            => 'text',
             'attributes'      => [
@@ -80,47 +80,47 @@ class PowerBI_Settings {
         ] );
 
         $cmb->add_field( [
-            'name' => __( 'Display Status', 'atlas-report-viewer-for-power-bi' ),
-            'desc' => __( 'Show loading and error messages to end users while the report is fetching.', 'atlas-report-viewer-for-power-bi' ),
+            'name' => __( 'Display Status', 'report-viewer-for-power-bi' ),
+            'desc' => __( 'Show loading and error messages to end users while the report is fetching.', 'report-viewer-for-power-bi' ),
             'id'   => 'pbi_display_status',
             'type' => 'checkbox',
         ] );
 
         $cmb->add_field( [
-            'name'    => __( 'Loading Spinner', 'atlas-report-viewer-for-power-bi' ),
-            'desc'    => __( 'Spinner style shown while the report is loading. <a href="https://www.davidhu.io/react-spinners/" target="_blank" rel="noopener">Preview all spinners</a>.', 'atlas-report-viewer-for-power-bi' ),
+            'name'    => __( 'Loading Spinner', 'report-viewer-for-power-bi' ),
+            'desc'    => __( 'Spinner style shown while the report is loading. <a href="https://www.davidhu.io/react-spinners/" target="_blank" rel="noopener">Preview all spinners</a>.', 'report-viewer-for-power-bi' ),
             'id'      => 'pbi_spinner_type',
             'type'    => 'select',
             'default' => 'clip',
             'options' => [
-                'bar'       => __( 'Bar', 'atlas-report-viewer-for-power-bi' ),
-                'beat'      => __( 'Beat', 'atlas-report-viewer-for-power-bi' ),
-                'bounce'    => __( 'Bounce', 'atlas-report-viewer-for-power-bi' ),
-                'circle'    => __( 'Circle', 'atlas-report-viewer-for-power-bi' ),
-                'clip'      => __( 'Clip', 'atlas-report-viewer-for-power-bi' ),
-                'clock'     => __( 'Clock', 'atlas-report-viewer-for-power-bi' ),
-                'dot'       => __( 'Dot', 'atlas-report-viewer-for-power-bi' ),
-                'fade'      => __( 'Fade', 'atlas-report-viewer-for-power-bi' ),
-                'grid'      => __( 'Grid', 'atlas-report-viewer-for-power-bi' ),
-                'hash'      => __( 'Hash', 'atlas-report-viewer-for-power-bi' ),
-                'moon'      => __( 'Moon', 'atlas-report-viewer-for-power-bi' ),
-                'pacman'    => __( 'Pacman', 'atlas-report-viewer-for-power-bi' ),
-                'propagate' => __( 'Propagate', 'atlas-report-viewer-for-power-bi' ),
-                'puff'      => __( 'Puff', 'atlas-report-viewer-for-power-bi' ),
-                'pulse'     => __( 'Pulse', 'atlas-report-viewer-for-power-bi' ),
-                'ring'      => __( 'Ring', 'atlas-report-viewer-for-power-bi' ),
-                'rise'      => __( 'Rise', 'atlas-report-viewer-for-power-bi' ),
-                'rotate'    => __( 'Rotate', 'atlas-report-viewer-for-power-bi' ),
-                'scale'     => __( 'Scale', 'atlas-report-viewer-for-power-bi' ),
-                'skew'      => __( 'Skew', 'atlas-report-viewer-for-power-bi' ),
-                'square'    => __( 'Square', 'atlas-report-viewer-for-power-bi' ),
-                'sync'      => __( 'Sync', 'atlas-report-viewer-for-power-bi' ),
+                'bar'       => __( 'Bar', 'report-viewer-for-power-bi' ),
+                'beat'      => __( 'Beat', 'report-viewer-for-power-bi' ),
+                'bounce'    => __( 'Bounce', 'report-viewer-for-power-bi' ),
+                'circle'    => __( 'Circle', 'report-viewer-for-power-bi' ),
+                'clip'      => __( 'Clip', 'report-viewer-for-power-bi' ),
+                'clock'     => __( 'Clock', 'report-viewer-for-power-bi' ),
+                'dot'       => __( 'Dot', 'report-viewer-for-power-bi' ),
+                'fade'      => __( 'Fade', 'report-viewer-for-power-bi' ),
+                'grid'      => __( 'Grid', 'report-viewer-for-power-bi' ),
+                'hash'      => __( 'Hash', 'report-viewer-for-power-bi' ),
+                'moon'      => __( 'Moon', 'report-viewer-for-power-bi' ),
+                'pacman'    => __( 'Pacman', 'report-viewer-for-power-bi' ),
+                'propagate' => __( 'Propagate', 'report-viewer-for-power-bi' ),
+                'puff'      => __( 'Puff', 'report-viewer-for-power-bi' ),
+                'pulse'     => __( 'Pulse', 'report-viewer-for-power-bi' ),
+                'ring'      => __( 'Ring', 'report-viewer-for-power-bi' ),
+                'rise'      => __( 'Rise', 'report-viewer-for-power-bi' ),
+                'rotate'    => __( 'Rotate', 'report-viewer-for-power-bi' ),
+                'scale'     => __( 'Scale', 'report-viewer-for-power-bi' ),
+                'skew'      => __( 'Skew', 'report-viewer-for-power-bi' ),
+                'square'    => __( 'Square', 'report-viewer-for-power-bi' ),
+                'sync'      => __( 'Sync', 'report-viewer-for-power-bi' ),
             ],
         ] );
 
         $cmb->add_field( [
-            'name'    => __( 'Spinner Color', 'atlas-report-viewer-for-power-bi' ),
-            'desc'    => __( 'Color of the loading spinner.', 'atlas-report-viewer-for-power-bi' ),
+            'name'    => __( 'Spinner Color', 'report-viewer-for-power-bi' ),
+            'desc'    => __( 'Color of the loading spinner.', 'report-viewer-for-power-bi' ),
             'id'      => 'pbi_spinner_color',
             'type'    => 'colorpicker',
             'default' => '#0078D4',
@@ -214,7 +214,7 @@ class PowerBI_Settings {
     }
 }
 
-// Self-register on plugins_loaded via the hook in atlas-report-viewer-for-power-bi.php init(),
+// Self-register on plugins_loaded via the hook in report-viewer-for-power-bi.php init(),
 // but also instantiate here so the settings page registers regardless.
 add_action( 'plugins_loaded', function () {
     new PowerBI_Settings();

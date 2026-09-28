@@ -12,11 +12,9 @@
  * Cache-Control headers are set aggressively to prevent caching plugins
  * from serving a stale or expired embed token.
  *
- * NOTE: the namespace below is deliberately 'report-viewer-for-power-bi/v1'
- * and does NOT track the plugin slug. A REST namespace is a public URL, not a
- * text domain, so WordPress.org imposes no matching requirement on it. It is
- * also duplicated in react-app/src/api/api.ts — changing one without
- * rebuilding the React bundle breaks every embed with a 404.
+ * NOTE: the namespace below is duplicated in react-app/src/api/api.ts.
+ * Changing one without rebuilding the React bundle breaks every embed
+ * with a 404.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -44,7 +42,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
                             'minimum'           => 1,
                             'sanitize_callback' => 'absint',
                             'validate_callback' => 'rest_validate_request_arg',
-                            'description'       => __( 'WP post ID of the powerbi_report post.', 'atlas-report-viewer-for-power-bi' ),
+                            'description'       => __( 'WP post ID of the powerbi_report post.', 'report-viewer-for-power-bi' ),
                         ],
                     ],
                 ],
@@ -64,7 +62,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( $count >= 30 ) {
             return new WP_Error(
                 'rest_rate_limited',
-                __( 'Too many requests. Please try again later.', 'atlas-report-viewer-for-power-bi' ),
+                __( 'Too many requests. Please try again later.', 'report-viewer-for-power-bi' ),
                 [ 'status' => 429 ]
             );
         }
@@ -76,7 +74,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( get_post_type( $post_id ) !== 'powerbi_report' ) {
             return new WP_Error(
                 'rest_invalid_param',
-                __( 'Invalid Power BI report ID.', 'atlas-report-viewer-for-power-bi' ),
+                __( 'Invalid Power BI report ID.', 'report-viewer-for-power-bi' ),
                 [ 'status' => 400 ]
             );
         }
@@ -86,7 +84,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( $restriction === 'logged_in' && ! is_user_logged_in() ) {
             return new WP_Error(
                 'rest_forbidden',
-                __( 'You must be logged in to view this report.', 'atlas-report-viewer-for-power-bi' ),
+                __( 'You must be logged in to view this report.', 'report-viewer-for-power-bi' ),
                 [ 'status' => 401 ]
             );
         }
@@ -94,7 +92,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( $restriction === 'administrator' && ! current_user_can( 'manage_options' ) ) {
             return new WP_Error(
                 'rest_forbidden',
-                __( 'You do not have permission to view this report.', 'atlas-report-viewer-for-power-bi' ),
+                __( 'You do not have permission to view this report.', 'report-viewer-for-power-bi' ),
                 [ 'status' => 403 ]
             );
         }
@@ -115,7 +113,7 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
         if ( ! $report_id || ! $group_id ) {
             return new WP_Error(
                 'powerbi_misconfigured',
-                __( 'This report is not fully configured. Report ID and Group ID are required.', 'atlas-report-viewer-for-power-bi' ),
+                __( 'This report is not fully configured. Report ID and Group ID are required.', 'report-viewer-for-power-bi' ),
                 [ 'status' => 500 ]
             );
         }

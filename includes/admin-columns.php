@@ -16,7 +16,7 @@ class PowerBI_Admin_Columns {
     }
 
     public function add_column( array $columns ): array {
-        $columns['pbi_shortcode'] = __( 'Shortcode', 'atlas-report-viewer-for-power-bi' );
+        $columns['pbi_shortcode'] = __( 'Shortcode', 'report-viewer-for-power-bi' );
         return $columns;
     }
 
@@ -31,7 +31,7 @@ class PowerBI_Admin_Columns {
             '<code>%s</code> <button type="button" class="button button-small pbi-copy-sc" data-sc="%s">%s</button>',
             esc_html( $shortcode ),
             esc_attr( $shortcode ),
-            esc_html__( 'Copy', 'atlas-report-viewer-for-power-bi' )
+            esc_html__( 'Copy', 'report-viewer-for-power-bi' )
         );
     }
 
@@ -48,8 +48,8 @@ class PowerBI_Admin_Columns {
         wp_enqueue_style( 'rvpbi-admin-columns' );
         wp_add_inline_style( 'rvpbi-admin-columns', $css );
 
-        $copied = esc_js( __( '🗸', 'atlas-report-viewer-for-power-bi' ) );
-        $copy   = esc_js( __( 'Copy', 'atlas-report-viewer-for-power-bi' ) );
+        $copied = esc_js( __( '🗸', 'report-viewer-for-power-bi' ) );
+        $copy   = esc_js( __( 'Copy', 'report-viewer-for-power-bi' ) );
 
         $js = "document.addEventListener( 'click', function ( e ) {
     if ( ! e.target.classList.contains( 'pbi-copy-sc' ) ) return;

@@ -1,18 +1,18 @@
 <?php
 /**
- * Plugin Name:  Atlas Report Viewer for Power BI
+ * Plugin Name:  Report Viewer for Power BI
  * Description:  Embed Power BI reports and dashboards in WordPress pages via shortcode, with Azure AD authentication managed through a settings page.
- * Version:      1.0.0
+ * Version:      1.0.1
  * Author:       Atlas Public Policy
  * Author URI:   https://atlaspolicy.com/
- * Text Domain:  atlas-report-viewer-for-power-bi
+ * Text Domain:  report-viewer-for-power-bi
  * License:      GPL-2.0-or-later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RVPBI_VERSION', '1.0.0' );
+define( 'RVPBI_VERSION', '1.0.1' );
 define( 'RVPBI_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RVPBI_URL', plugin_dir_url( __FILE__ ) );
 

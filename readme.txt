@@ -1,10 +1,10 @@
-=== Atlas Report Viewer for Power BI ===
+=== Report Viewer for Power BI ===
 Contributors: atlaspolicy
 Tags: power bi, reports, embed, business intelligence
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Embed Power BI reports and dashboards in WordPress pages via shortcode, with Azu
 
 == Description ==
 
-Atlas Report Viewer for Power BI lets you save each of your Power BI reports in WordPress, then drop it into any page or post with a shortcode.
+Report Viewer for Power BI lets you save each of your Power BI reports in WordPress, then drop it into any page or post with a shortcode.
 
 Your Power BI sign-in happens on the server, so your Azure AD credentials are never sent to your visitors' browsers. Credentials are also encrypted before they are saved in your WordPress database.
 
@@ -31,7 +31,7 @@ Features:
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/atlas-report-viewer-for-power-bi` directory, or install it from the **Plugins > Add New** screen in WordPress.
+1. Upload the plugin files to the `/wp-content/plugins/report-viewer-for-power-bi` directory, or install it from the **Plugins > Add New** screen in WordPress.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Go to **Power BI Reports > Settings** and enter your Azure AD details (see the FAQ below for what you need).
 4. Go to **Power BI Reports > Add New Report**, give it a title, and enter the Report ID and Group/Workspace ID from Power BI.
@@ -108,6 +108,13 @@ Privacy Policy: https://privacy.microsoft.com/en-us/privacystatement
 Terms of Service: https://powerbi.microsoft.com/en-us/terms-of-service/
 
 == Changelog ==
+
+= 1.0.1 =
+* Azure AD credentials are now encrypted in the database.
+* Sign-in errors no longer expose Azure AD details to visitors.
+* Access tokens are cached on the server and reused until they near expiry.
+* Added rate limiting to the embed endpoint.
+* Removed debug logging from normal operation.
 
 = 1.0.0 =
 * Initial release.

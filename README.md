@@ -1,4 +1,4 @@
-# Atlas Report Viewer for Power BI
+# Report Viewer for Power BI
 
 A WordPress plugin that embeds Microsoft Power BI reports and dashboards into any page or post via the `[powerbi_report]` shortcode.
 
@@ -34,7 +34,7 @@ cd react-app && npm install
 
 ### Enable dev mode in the plugin
 
-Open `atlas-report-viewer-for-power-bi.php` and set:
+Open `report-viewer-for-power-bi.php` and set:
 
 ```php
 define( 'RVPBI_DEV_MODE', true );
@@ -62,9 +62,9 @@ composer run build
 This will:
 
 1. `npm ci && npm run build` inside `react-app/` → outputs to `react-app/dist/`
-2. Run `scripts/export.php` → creates `atlas-report-viewer-for-power-bi.zip`
+2. Run `scripts/export.php` → creates `report-viewer-for-power-bi.zip`
 
-Upload `atlas-report-viewer-for-power-bi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
+Upload `report-viewer-for-power-bi.zip` to your WordPress site via **Plugins → Add New → Upload Plugin**.
 
 > **Remember** to set `RVPBI_DEV_MODE` back to `false` before building.
 
@@ -77,7 +77,7 @@ The [WordPress Plugin Check (PCP)](https://wordpress.org/plugins/plugin-check/) 
 ### Option A — WP-CLI (recommended)
 
 ```bash
-wp plugin check atlas-report-viewer-for-power-bi
+wp plugin check report-viewer-for-power-bi
 ```
 
 Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if needed). Results print directly to the terminal.
@@ -86,14 +86,14 @@ Run from your WordPress root (or prefix with `wp --path=/path/to/wordpress` if n
 
 1. Install and activate the **Plugin Check** plugin from **Plugins → Add New**.
 2. Go to **Tools → Plugin Check**.
-3. Select **Atlas Report Viewer for Power BI** from the dropdown and click **Check it!**.
+3. Select **Report Viewer for Power BI** from the dropdown and click **Check it!**.
 
 ### Saving results
 
 Pipe WP-CLI output to a markdown file for review:
 
 ```bash
-wp plugin check atlas-report-viewer-for-power-bi --format=csv > PLUGINCHECK.csv
+wp plugin check report-viewer-for-power-bi --format=csv > PLUGINCHECK.csv
 ```
 
 Or use the `--format=json` flag if you prefer structured output.
@@ -256,8 +256,8 @@ const Title = styled.h1`
 ## Project Structure
 
 ```
-atlas-report-viewer-for-power-bi/
-├── atlas-report-viewer-for-power-bi.php      # RVPBI bootstrap — constants, requires, activation hooks
+report-viewer-for-power-bi/
+├── report-viewer-for-power-bi.php      # RVPBI bootstrap — constants, requires, activation hooks
 ├── composer.json
 ├── composer.lock
 ├── includes/
