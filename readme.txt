@@ -109,12 +109,11 @@ Terms of Service: https://powerbi.microsoft.com/en-us/terms-of-service/
 
 == Changelog ==
 
+= 1.0.0 =
+* Initial release.
+
 = 1.0.1 =
 * Azure AD credentials are now encrypted in the database.
-* Sign-in errors no longer expose Azure AD details to visitors.
 * Access tokens are cached on the server and reused until they near expiry.
 * Added rate limiting to the embed endpoint.
 * Removed debug logging from normal operation.
-
-= 1.0.0 =
-* Initial release.
