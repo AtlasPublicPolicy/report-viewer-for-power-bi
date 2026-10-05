@@ -4,7 +4,7 @@ Tags: power bi, reports, embed, business intelligence
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -117,3 +117,6 @@ Terms of Service: https://powerbi.microsoft.com/en-us/terms-of-service/
 * Access tokens are cached on the server and reused until they near expiry.
 * Added rate limiting to the embed endpoint.
 * Removed debug logging from normal operation.
+
+= 1.0.2 =
+* Fixed the Show Filter Pane setting, which had no effect. Choosing "No" now hides the filter pane.

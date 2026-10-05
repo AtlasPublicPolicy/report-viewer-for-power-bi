@@ -130,7 +130,11 @@ class PowerBI_REST_Controller extends WP_REST_Controller {
             $config['pageName'] = $page_name;
         }
 
-        $config['filterPaneEnabled'] = ( get_post_meta( $post_id, 'pbi_filter_pane', true ) ?: '1' ) === '1';
+        // Compare the stored string explicitly: '0' is falsy in PHP, so `?: '1'`
+        // would turn an explicit "No" back into the default "Yes". Only a genuinely
+        // absent value (reports saved before this field existed) defaults to on.
+        $filter_pane                 = get_post_meta( $post_id, 'pbi_filter_pane', true );
+        $config['filterPaneEnabled'] = ( '' === $filter_pane ) ? true : ( '1' === $filter_pane );
 
         $response = rest_ensure_response( $config );
 

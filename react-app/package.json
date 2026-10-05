@@ -1,7 +1,7 @@
 {
   "name": "report-viewer-for-power-bi",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
